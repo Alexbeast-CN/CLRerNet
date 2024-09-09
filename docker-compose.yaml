@@ -1,6 +1,6 @@
-version: "2.3"
 services:
   dev:
+    image: clrernet
     runtime: nvidia
     build:
       context: .
@@ -17,4 +17,5 @@ services:
     tty: true
     volumes:
       - .:/work
-      - $HOME/dataset:/work/dataset
+      - /home/tim/winE/LinuxExechange/3DataSets:/work/dataset
+    network_mode: "host"

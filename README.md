@@ -37,7 +37,7 @@ CLRNet        | DLA34    | 80.47  | 18.4
 Docker environment is recommended for installation:
 ```bash
 docker-compose build --build-arg UID="`id -u`" dev
-docker-compose run --rm dev
+docker-compose run -itd dev
 ```
 
 See [Installation Tips](docs/INSTALL.md) for more details.

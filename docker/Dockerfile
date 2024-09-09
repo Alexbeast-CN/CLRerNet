@@ -1,5 +1,19 @@
 FROM nvidia/cuda:11.8.0-devel-ubuntu22.04
 
+# Use local host proxy
+ENV http_proxy="http://172.17.0.1:7890"
+ENV HTTP_PROXY="http://172.17.0.1:7890"
+ENV https_proxy="http://172.17.0.1:7890"
+ENV HTTPS_PROXY="http://172.17.0.1:7890"
+
+# Change apt source to ustc
+RUN mv /etc/apt/sources.list /etc/apt/sources_backup.list && \
+        echo "deb http://mirrors.ustc.edu.cn/ubuntu/ jammy main restricted universe multiverse" >> /etc/apt/sources.list && \
+        echo "deb http://mirrors.ustc.edu.cn/ubuntu/ jammy-updates main restricted universe multiverse" >> /etc/apt/sources.list && \
+        echo "deb http://mirrors.ustc.edu.cn/ubuntu/ jammy-backports main restricted universe multiverse " >> /etc/apt/sources.list && \
+        echo "deb http://mirrors.ustc.edu.cn/ubuntu/ jammy-security main restricted universe multiverse" >> /etc/apt/sources.list
+
+
 # packages
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
@@ -17,8 +31,8 @@ RUN echo 'docker ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 USER docker
 
 # python
-ENV PYENV_ROOT /home/docker/.pyenv
-ENV PATH $PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
+ENV PYENV_ROOT=/home/docker/.pyenv
+ENV PATH=$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
 RUN curl -L https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/pyenv-installer | bash
 ARG PYTHON_VERSION
 RUN pyenv install ${PYTHON_VERSION} && pyenv global ${PYTHON_VERSION}
@@ -56,8 +70,8 @@ WORKDIR /tmp/nms
 RUN python /tmp/nms/setup.py install
 
 # path
-ENV PYTHONPATH $PYTHONPATH:/work
-ENV PYTHONPATH $PYTHONPATH:/home/docker/
+ENV PYTHONPATH=$PYTHONPATH:/work
+ENV PYTHONPATH=$PYTHONPATH:/home/docker/
 
 WORKDIR /work
 
